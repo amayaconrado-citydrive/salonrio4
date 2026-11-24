@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnero de Salón - Entregas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #09090b; }
+    .card-hover { transition: all 0.15s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); border-color: #09090b; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-black text-white border-b border-zinc-800 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-white text-black font-extrabold flex items-center justify-center rounded text-sm tracking-tighter">CD</div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight uppercase">Turnero de Salón</h1>
+          <p class="text-[11px] text-zinc-400 hidden sm:block">Gestión y Seguimiento de Entregas</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span id="last-sync" class="text-[11px] text-zinc-400 hidden md:inline"></span>
+        <button onclick="cargarDatos()" id="btn-refresh" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-medium rounded flex items-center gap-1.5 transition">
+          <svg id="icon-refresh" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Actualizar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barra de Controles y Filtros -->
+  <div class="bg-white border-b border-zinc-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      <div class="inline-flex bg-zinc-100 p-1 rounded-lg border border-zinc-200 self-start">
+        <button onclick="cambiarVista('dia')" id="tab-dia" class="px-4 py-1.5 rounded-md text-xs font-semibold transition bg-black text-white shadow-sm">
+          Día <span id="count-dia" class="ml-1 px-1.5 py-0.2 bg-zinc-700 text-white rounded-full text-[10px]">0</span>
+        </button>
+        <button onclick="cambiarVista('semana')" id="tab-semana" class="px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black">
+          Semana <span id="count-semana" class="ml-1 px-1.5 py-0.2 bg-zinc-200 text-zinc-700 rounded-full text-[10px]">0</span>
+        </button>
+        <button onclick="cambiarVista('mes')" id="tab-mes" class="px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black">
+          Mes <span id="count-mes" class="ml-1 px-1.5 py-0.2 bg-zinc-200 text-zinc-700 rounded-full text-[10px]">0</span>
+        </button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center border border-zinc-300 rounded-lg bg-white overflow-hidden">
+          <button onclick="moverFecha(-1)" class="px-2.5 py-1.5 hover:bg-zinc-100 text-zinc-700 border-r border-zinc-200 font-bold text-xs">&lt;</button>
+          <span id="rango-fecha-label" class="px-3 py-1.5 text-xs font-semibold min-w-[150px] text-center capitalize">Cargando...</span>
+          <button onclick="moverFecha(1)" class="px-2.5 py-1.5 hover:bg-zinc-100 text-zinc-700 border-l border-zinc-200 font-bold text-xs">&gt;</button>
+        </div>
+        <button onclick="irAHoy()" class="px-3 py-1.5 border border-zinc-300 hover:bg-zinc-100 rounded-lg text-xs font-medium">Hoy</button>
+        
+        <input type="text" id="buscador" oninput="renderizar()" placeholder="Buscar cliente, modelo, chasis..." 
+               class="px-3 py-1.5 border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-black w-full sm:w-56">
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+    <div id="loader" class="flex flex-col items-center justify-center py-20 text-zinc-500">
+      <div class="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-xs font-medium">Sincronizando entregas desde la planilla...</p>
+    </div>
+
+    <div id="contenedor-entregas" class="hidden"></div>
+  </main>
+
+  <!-- Modal de Detalle -->
+  <div id="modal-detalle" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4" onclick="if(event.target===this) cerrarModal()">
+    <div class="bg-white border border-zinc-200 rounded-xl max-w-lg w-full shadow-2xl overflow-hidden">
+      <div class="bg-black text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Ficha de Entrega</span>
+          <h2 id="m-cliente" class="text-lg font-bold leading-tight mt-0.5">CLIENTE</h2>
+        </div>
+        <button onclick="cerrarModal()" class="text-zinc-400 hover:text-white text-xl font-bold leading-none">&times;</button>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-4 bg-zinc-50 p-3.5 rounded-lg border border-zinc-200">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Fecha de Turno</p>
+            <p id="m-fecha" class="text-sm font-bold text-black mt-0.5">--/--/----</p>
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Horario</p>
+            <p id="m-hora" class="text-sm font-bold text-black mt-0.5">--:--</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Modelo</span>
+            <span id="m-modelo" class="font-bold text-black uppercase">-</span>
+          </div>
+          
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Bastidor / Chasis</span>
+            <div class="flex items-center gap-2">
+              <span id="m-bastidor" class="font-mono text-xs bg-zinc-100 px-2 py-1 rounded border border-zinc-200 font-semibold">-</span>
+              <button onclick="copiarBastidor()" id="btn-copy" class="text-[11px] px-2 py-1 bg-black text-white rounded hover:bg-zinc-800 transition">Copiar</button>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Refer</span>
+            <span id="m-refer" class="font-semibold text-black">-</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Usado</span>
+            <span id="m-usado" class="font-semibold text-black">-</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2">
+            <span class="text-zinc-500 font-medium">Usuario de alta</span>
+            <span id="m-usuario" class="text-xs text-zinc-600 font-mono">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-50 px-6 py-3 border-t border-zinc-200 flex justify-end">
+        <button onclick="cerrarModal()" class="px-4 py-2 bg-black text-white text-xs font-semibold rounded-lg hover:bg-zinc-800 transition">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxbrnpBmaYCPTQJDpV4PYlVRTiuno1lvaN2ny-Y2601lFRlyi7Fu44U0pWyujMHtEIe/exec';
+
+    let todasLasEntregas = [];
+    let vistaActual = 'dia';
+    let fechaReferencia = new Date();
+    fechaReferencia.setHours(0,0,0,0);
+
+    async function cargarDatos() {
+      const icon = document.getElementById('icon-refresh');
+      icon.classList.add('animate-spin');
+      
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Error HTTP ' + res.status);
+        const datos = await res.json();
+        
+        todasLasEntregas = datos || [];
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('contenedor-entregas').classList.remove('hidden');
+        
+        const ahora = new Date();
+        document.getElementById('last-sync').textContent = 'Actualizado ' + ahora.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+        renderizar();
+      } catch (err) {
+        document.getElementById('loader').innerHTML = `<p class="text-red-600 text-xs font-semibold">Error al conectar con la planilla: ${err.message}</p>`;
+      } finally {
+        icon.classList.remove('animate-spin');
+      }
+    }
+
+    function parseFechaLocal(isoStr) {
+      if (!isoStr) return null;
+      const [y, m, d] = isoStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function formatFechaArg(isoStr) {
+      if (!isoStr) return '-';
+      const [y, m, d] = isoStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function getRangoFechas(vista, ref) {
+      const inicio = new Date(ref);
+      const fin = new Date(ref);
+      if (vista === 'semana') {
+        const day = inicio.getDay();
+        const diff = inicio.getDate() - day + (day === 0 ? -6 : 1);
+        inicio.setDate(diff);
+        fin.setTime(inicio.getTime());
+        fin.setDate(inicio.getDate() + 6);
+      } else if (vista === 'mes') {
+        inicio.setDate(1);
+        fin.setMonth(inicio.getMonth() + 1, 0);
+      }
+      inicio.setHours(0,0,0,0);
+      fin.setHours(23,59,59,999);
+      return { inicio, fin };
+    }
+
+    function cambiarVista(nuevaVista) {
+      vistaActual = nuevaVista;
+      ['dia', 'semana', 'mes'].forEach(v => {
+        const btn = document.getElementById('tab-' + v);
+        btn.className = v === nuevaVista
+          ? 'px-4 py-1.5 rounded-md text-xs font-semibold transition bg-black text-white shadow-sm'
+          : 'px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black';
+      });
+      renderizar();
+    }
+
+    function moverFecha(delta) {
+      if (vistaActual === 'dia') fechaReferencia.setDate(fechaReferencia.getDate() + delta);
+      if (vistaActual === 'semana') fechaReferencia.setDate(fechaReferencia.getDate() + (delta * 7));
+      if (vistaActual === 'mes') fechaReferencia.setMonth(fechaReferencia.getMonth() + delta);
+      renderizar();
+    }
+
+    function irAHoy() {
+      fechaReferencia = new Date();
+      fechaReferencia.setHours(0,0,0,0);
+      renderizar();
+    }
+
+    function actualizarContadores() {
+      const rDia = getRangoFechas('dia', fechaReferencia);
+      const rSem = getRangoFechas('semana', fechaReferencia);
+      const rMes = getRangoFechas('mes', fechaReferencia);
+
+      let cDia = 0, cSem = 0, cMes = 0;
+      todasLasEntregas.forEach(e => {
+        const f = parseFechaLocal(e.fecha);
+        if (!f) return;
+        if (f >= rDia.inicio && f <= rDia.fin) cDia++;
+        if (f >= rSem.inicio && f <= rSem.fin) cSem++;
+        if (f >= rMes.inicio && f <= rMes.fin) cMes++;
+      });
+
+      document.getElementById('count-dia').textContent = cDia;
+      document.getElementById('count-semana').textContent = cSem;
+      document.getElementById('count-mes').textContent = cMes;
+    }
+
+    function renderizar() {
+      actualizarContadores();
+      const { inicio, fin } = getRangoFechas(vistaActual, fechaReferencia);
+      const q = document.getElementById('buscador').value.toLowerCase().trim();
+
+      const lbl = document.getElementById('rango-fecha-label');
+      if (vistaActual === 'dia') {
+        lbl.textContent = fechaReferencia.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+      } else if (vistaActual === 'semana') {
+        lbl.textContent = `${inicio.toLocaleDateString('es-AR', {day:'2-digit', month:'short'})} - ${fin.toLocaleDateString('es-AR', {day:'2-digit', month:'short'})}`;
+      } else {
+        lbl.textContent = fechaReferencia.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+      }
+
+      const filtradas = todasLasEntregas
+        .filter(e => {
+          const f = parseFechaLocal(e.fecha);
+          if (!f || f < inicio || f > fin) return false;
+          if (!q) return true;
+          return (e.cliente + ' ' + e.modelo + ' ' + e.bastidor + ' ' + e.refer + ' ' + e.usado).toLowerCase().includes(q);
+        })
+        .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+
+      const cont = document.getElementById('contenedor-entregas');
+      if (filtradas.length === 0) {
+        cont.innerHTML = `
+          <div class="bg-white border border-zinc-200 rounded-xl p-12 text-center">
+            <p class="text-sm font-semibold text-zinc-800">No hay entregas programadas para este período</p>
+            <p class="text-xs text-zinc-500 mt-1">Probá cambiando de fecha o seleccionando la vista de Semana o Mes.</p>
+          </div>`;
+        return;
+      }
+
+      const grupos = {};
+      filtradas.forEach(e => {
+        if (!grupos[e.fecha]) grupos[e.fecha] = [];
+        grupos[e.fecha].push(e);
+      });
+
+      let html = '<div class="space-y-6">';
+      Object.keys(grupos).sort().forEach(fechaKey => {
+        const fObj = parseFechaLocal(fechaKey);
+        const tituloFecha = fObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        html += `
+          <div>
+            <div class="flex items-center justify-between mb-3 border-b border-zinc-200 pb-1.5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-700 capitalize">${tituloFecha}</h3>
+              <span class="text-[11px] font-semibold text-zinc-500">${grupos[fechaKey].length} entrega(s)</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">`;
+
+        grupos[fechaKey].forEach(item => {
+          const tieneUsado = item.usado && item.usado !== '-';
+          html += `
+            <div onclick='abrirModal(${JSON.stringify(item).replace(/'/g, "&#39;")})' 
+                 class="bg-white border border-zinc-200 rounded-xl p-4 cursor-pointer card-hover flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="px-2.5 py-0.5 bg-black text-white text-xs font-bold rounded font-mono">${item.hora} hs</span>
+                  ${tieneUsado ? '<span class="px-2 py-0.5 bg-zinc-100 border border-zinc-300 text-zinc-800 text-[10px] font-bold uppercase rounded">Con Usado</span>' : ''}
+                </div>
+                <h4 class="font-bold text-sm text-black uppercase truncate" title="${item.cliente}">${item.cliente || 'Sin nombre'}</h4>
+                <p class="text-xs font-semibold text-zinc-600 mt-0.5 uppercase">${item.modelo || 'Modelo a confirmar'}</p>
+              </div>
+              
+              <div class="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+                <span class="font-mono truncate max-w-[160px]">${item.bastidor || 'Sin bastidor'}</span>
+                <span class="text-black font-semibold">Ver ficha &rarr;</span>
+              </div>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+      });
+      html += '</div>';
+      cont.innerHTML = html;
+    }
+
+    function abrirModal(item) {
+      document.getElementById('m-cliente').textContent = item.cliente || '-';
+      document.getElementById('m-fecha').textContent = formatFechaArg(item.fecha);
+      document.getElementById('m-hora').textContent = (item.hora || '--:--') + ' hs';
+      document.getElementById('m-modelo').textContent = item.modelo || '-';
+      document.getElementById('m-bastidor').textContent = item.bastidor || '-';
+      document.getElementById('m-refer').textContent = item.refer || '-';
+      document.getElementById('m-usado').textContent = item.usado || 'No entrega usado';
+      document.getElementById('m-usuario').textContent = item.usuario || '-';
+      
+      const modal = document.getElementById('modal-detalle');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById('modal-detalle');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copiarBastidor() {
+      const txt = document.getElementById('m-bastidor').textContent;
+      if (!txt || txt === '-') return;
+      navigator.clipboard.writeText(txt);
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = '¡Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 1500);
+    }
+
+    cargarDatos();
+    setInterval(cargarDatos, 180000);
+  </script>
+</body>
+</html>
