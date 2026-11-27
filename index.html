@@ -1,301 +1,355 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Citydrive | Turnero comercial</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fff;--fg:#0a0a0a;--mut:#71717a;--line:#e4e4e7;--soft:#f4f4f5;--inv:#0a0a0a;--invfg:#fff;--ok:#059669;--warn:#d97706;--bad:#e11d48;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--fg:#fafafa;--mut:#a1a1aa;--line:#3f3f46;--soft:#18181b;--inv:#fafafa;--invfg:#0a0a0a;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0a0a0a;--fg:#fafafa;--mut:#a1a1aa;--line:#3f3f46;--soft:#18181b;--inv:#fafafa;--invfg:#0a0a0a;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.4}
-.wrap{max-width:1400px;margin:0 auto;padding:16px}
-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-.logo{font-size:28px;letter-spacing:-.04em}.logo b{font-weight:800}.logo span{font-weight:400}
-.nav{display:flex;align-items:center;gap:4px;background:var(--soft);border:1px solid var(--line);border-radius:99px;padding:4px}
-.nav button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;padding:7px 14px;font-weight:600;font-size:12px}
-.nav button{border:0;background:transparent;font-size:16px;padding:4px 12px}
-.nav .m{min-width:150px;text-align:center;font-weight:700;font-size:13px}
-.btn.dark{background:var(--inv);color:var(--invfg);border-color:var(--inv);font-weight:700}
-.card{border:1px solid var(--fg);border-radius:16px;padding:16px;margin-bottom:16px;background:var(--bg)}
-.kpi{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
-.eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
-.kpi h2{margin:2px 0 0;font-size:24px;font-weight:800;letter-spacing:-.02em}
-.bar{height:12px;background:var(--soft);border:1px solid var(--line);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:99px;background:var(--bad)}
-.pill{display:inline-block;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700}
-.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
-.filters button{font:inherit;cursor:pointer;border:0;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;background:var(--soft);color:var(--fg);white-space:nowrap}
-.filters button.on{background:var(--inv);color:var(--invfg)}
-.legend{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;margin-bottom:12px;align-items:center}
-.layout{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
-.main{flex:1 1 100%;min-width:0}
-.scroll{overflow-x:auto}
-.cal{min-width:760px;border:1px solid var(--fg);border-radius:16px;overflow:hidden}
-.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.dow div{background:var(--inv);color:var(--invfg);text-align:center;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 0}
-.cell{min-height:150px;padding:6px;border-right:1px solid var(--line);border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px;background:var(--bg)}
-.cell:nth-child(7n){border-right:0}
-.cell.sun{background:repeating-linear-gradient(-45deg,var(--soft),var(--soft) 4px,var(--bg) 4px,var(--bg) 8px)}
-.cell.empty{background:var(--soft)}
-.cell.today{outline:2px solid var(--fg);outline-offset:-2px}
-.dn{font-weight:800;font-size:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
-.dn .n{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
-.today .dn .n{background:var(--inv);color:var(--invfg)}
-.warn{font-size:9px;font-weight:700;border:1px solid var(--warn);color:var(--warn);border-radius:4px;padding:1px 5px}
-.sh{display:flex;justify-content:space-between;gap:4px;border:1px solid;border-radius:6px;padding:3px 6px;font-size:10.5px}
-.sh b{font-weight:700}.sh small{font-size:9px;text-align:right;line-height:1.15}
-.s-M{background:var(--inv);color:var(--invfg);border-color:var(--inv)}
-.s-T{background:#3f3f46;color:#fff;border-color:#3f3f46}
-.s-SM{background:var(--bg);border-color:var(--fg)}
-.s-SC{background:#18181b;color:#fff;border-color:#52525b}
-.s-DG{background:var(--bg);color:var(--fg);border:1px solid var(--line)}
-.s-Z{background:var(--bg);border:1px dashed var(--mut)}
-.s-E{background:var(--line);border-color:var(--fg);font-weight:700}
-.s-D{background:var(--soft);color:var(--mut);border-color:var(--line)}
-.hol{margin:auto 0;text-align:center;background:var(--inv);color:var(--invfg);border-radius:8px;padding:8px;font-size:11px;font-weight:700}
-.hol span{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
-.note{font-size:10px;color:var(--mut);border-top:1px solid var(--line);padding-top:3px;margin-top:auto}
-.panel{border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
-.panel h3{margin:0 0 10px;font-size:14px;font-weight:800}
-.panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:12px}
-.panel li{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
-th{background:var(--soft);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
-td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
-th:first-child,td:first-child{text-align:left;font-weight:700;padding-left:14px}
-.mini{height:8px;background:var(--line);border-radius:99px;overflow:hidden;min-width:70px}.mini i{display:block;height:100%}
-.empty-msg{padding:28px;text-align:center;color:var(--mut);font-weight:600}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);opacity:0;background:var(--inv);color:var(--invfg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:12px;transition:.3s;pointer-events:none}
-#toast.show{transform:translate(-50%,0);opacity:1}
-@media print{.noprint{display:none!important}body{background:#fff;color:#000}.cell{break-inside:avoid}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnero de Salón - Entregas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #09090b; }
+    .card-hover { transition: all 0.15s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); border-color: #09090b; }
+  </style>
 </head>
-<body>
-<div class="wrap">
-<header>
-  <div class="logo"><b>City</b><span>drive</span></div>
-  <div class="nav noprint">
-    <button onclick="chg(-1)" aria-label="Mes anterior">‹</button>
-    <span class="m" id="mlabel"></span>
-    <button onclick="chg(1)" aria-label="Mes siguiente">›</button>
-    <button class="btn dark" onclick="goToday()" style="font-size:11px;padding:5px 12px">Hoy</button>
-  </div>
-</header>
+<body class="min-h-screen flex flex-col">
 
-<section class="card" id="goal"></section>
+  <!-- Header -->
+  <header class="bg-black text-white border-b border-zinc-800 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-white text-black font-extrabold flex items-center justify-center rounded text-sm tracking-tighter">CD</div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight uppercase">Turnero de Salón</h1>
+          <p class="text-[11px] text-zinc-400 hidden sm:block">Gestión y Seguimiento de Entregas</p>
+        </div>
+      </div>
 
-<div class="layout">
-  <div class="main">
-    <div class="filters noprint" id="filters"></div>
-    <div class="legend">
-      <span class="eyebrow">Horarios:</span>
-      <span class="pill s-M">Mañana 08:30–14:00</span>
-      <span class="pill s-T">Tarde 14:00–20:00</span>
-      <span class="pill s-SM">Sáb Mañ 08:30–13:30</span>
-      <span class="pill s-SC">Sáb Comp 8:30–13:30 / 16:30–20</span>
-      <span class="pill s-Z">Zona</span>
-      <span class="pill s-DG">Digital</span>
-      <span class="pill s-E">★ Evento</span>
-      <span class="pill s-D">Descanso</span>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span id="last-sync" class="text-[11px] text-zinc-400 hidden md:inline"></span>
+        <button onclick="cargarDatos()" id="btn-refresh" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-medium rounded flex items-center gap-1.5 transition">
+          <svg id="icon-refresh" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Actualizar
+        </button>
+      </div>
     </div>
-    <div class="scroll"><div class="cal">
-      <div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div>
-      <div class="grid" id="grid"></div>
-    </div></div>
+  </header>
+
+  <!-- Barra de Controles y Filtros -->
+  <div class="bg-white border-b border-zinc-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      <div class="inline-flex bg-zinc-100 p-1 rounded-lg border border-zinc-200 self-start">
+        <button onclick="cambiarVista('dia')" id="tab-dia" class="px-4 py-1.5 rounded-md text-xs font-semibold transition bg-black text-white shadow-sm">
+          Día <span id="count-dia" class="ml-1 px-1.5 py-0.2 bg-zinc-700 text-white rounded-full text-[10px]">0</span>
+        </button>
+        <button onclick="cambiarVista('semana')" id="tab-semana" class="px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black">
+          Semana <span id="count-semana" class="ml-1 px-1.5 py-0.2 bg-zinc-200 text-zinc-700 rounded-full text-[10px]">0</span>
+        </button>
+        <button onclick="cambiarVista('mes')" id="tab-mes" class="px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black">
+          Mes <span id="count-mes" class="ml-1 px-1.5 py-0.2 bg-zinc-200 text-zinc-700 rounded-full text-[10px]">0</span>
+        </button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center border border-zinc-300 rounded-lg bg-white overflow-hidden">
+          <button onclick="moverFecha(-1)" class="px-2.5 py-1.5 hover:bg-zinc-100 text-zinc-700 border-r border-zinc-200 font-bold text-xs">&lt;</button>
+          <span id="rango-fecha-label" class="px-3 py-1.5 text-xs font-semibold min-w-[150px] text-center capitalize">Cargando...</span>
+          <button onclick="moverFecha(1)" class="px-2.5 py-1.5 hover:bg-zinc-100 text-zinc-700 border-l border-zinc-200 font-bold text-xs">&gt;</button>
+        </div>
+        <button onclick="irAHoy()" class="px-3 py-1.5 border border-zinc-300 hover:bg-zinc-100 rounded-lg text-xs font-medium">Hoy</button>
+        
+        <input type="text" id="buscador" oninput="renderizar()" placeholder="Buscar cliente, modelo, chasis..." 
+               class="px-3 py-1.5 border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-black w-full sm:w-56">
+      </div>
+    </div>
   </div>
-</div>
 
-<section class="card" style="padding:0;overflow:hidden;margin-top:4px">
-  <div style="padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft)">
-    <h2 style="margin:0;font-size:16px;font-weight:800">Resumen mensual: turnos, zona y objetivos individuales</h2>
+  <!-- Contenido Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+    <div id="loader" class="flex flex-col items-center justify-center py-20 text-zinc-500">
+      <div class="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-xs font-medium">Sincronizando entregas desde la planilla...</p>
+    </div>
+
+    <div id="contenedor-entregas" class="hidden"></div>
+  </main>
+
+  <!-- Modal de Detalle -->
+  <div id="modal-detalle" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4" onclick="if(event.target===this) cerrarModal()">
+    <div class="bg-white border border-zinc-200 rounded-xl max-w-lg w-full shadow-2xl overflow-hidden">
+      <div class="bg-black text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Ficha de Entrega</span>
+          <h2 id="m-cliente" class="text-lg font-bold leading-tight mt-0.5">CLIENTE</h2>
+        </div>
+        <button onclick="cerrarModal()" class="text-zinc-400 hover:text-white text-xl font-bold leading-none">&times;</button>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-4 bg-zinc-50 p-3.5 rounded-lg border border-zinc-200">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Fecha de Turno</p>
+            <p id="m-fecha" class="text-sm font-bold text-black mt-0.5">--/--/----</p>
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Horario</p>
+            <p id="m-hora" class="text-sm font-bold text-black mt-0.5">--:--</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Modelo</span>
+            <span id="m-modelo" class="font-bold text-black uppercase">-</span>
+          </div>
+          
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Bastidor / Chasis</span>
+            <div class="flex items-center gap-2">
+              <span id="m-bastidor" class="font-mono text-xs bg-zinc-100 px-2 py-1 rounded border border-zinc-200 font-semibold">-</span>
+              <button onclick="copiarBastidor()" id="btn-copy" class="text-[11px] px-2 py-1 bg-black text-white rounded hover:bg-zinc-800 transition">Copiar</button>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Refer</span>
+            <span id="m-refer" class="font-semibold text-black">-</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2 border-b border-zinc-100">
+            <span class="text-zinc-500 font-medium">Usado</span>
+            <span id="m-usado" class="font-semibold text-black">-</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2">
+            <span class="text-zinc-500 font-medium">Usuario de alta</span>
+            <span id="m-usuario" class="text-xs text-zinc-600 font-mono">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-50 px-6 py-3 border-t border-zinc-200 flex justify-end">
+        <button onclick="cerrarModal()" class="px-4 py-2 bg-black text-white text-xs font-semibold rounded-lg hover:bg-zinc-800 transition">Cerrar</button>
+      </div>
+    </div>
   </div>
-  <div class="scroll"><table>
-    <thead><tr><th>Vendedor</th><th>Objetivo</th><th>Avance</th><th style="min-width:140px">% Cumplimiento</th><th>Proyección</th><th>Mañ. L-V</th><th>Tar. L-V</th><th>Zona</th><th>Sáb. salón</th><th>Eventos</th><th>Total jorn.</th></tr></thead>
-    <tbody id="sum"></tbody>
-  </table></div>
-</section>
-</div>
-<div id="toast"></div>
 
-<script>
-/* ===== DATOS DEL TURNERO (se actualizan desde acá) =====
-   Orden de cada día: Valeria, Valentín, Manuel, Emanuel, Ignacio
-   M=Mañana T=Tarde Z=Zona E=Evento SM=Sáb Mañana SC=Sáb Completo D=Descanso */
-const SELLERS=[{id:"valeria",name:"Valeria"},{id:"valentin",name:"Valentín"},{id:"manuel",name:"Manuel"},{id:"emanuel",name:"Emanuel"},{id:"ignacio",name:"Ignacio"}];
-const SCHEDULE={
-"2026-11-02":"T,Z,M,Z,M","2026-11-03":"Z,M,M,Z,T","2026-11-04":"Z,M,T,M,Z","2026-11-05":"M,T,Z,M,Z","2026-11-06":"M,Z,Z,T,M","2026-11-07":"SM,D,D,D,SC",
-"2026-11-09":"H:Visita del Papa","2026-11-10":"H:Feriado provincial Córdoba",
-"2026-11-11":"T,Z,M,Z,M","2026-11-12":"Z,M,M,Z,T","2026-11-13":"Z,M,T,M,Z","2026-11-14":"D,SM,D,SC,D",
-"2026-11-16":"M,T,Z,M,Z","2026-11-17":"M,Z,Z,T,M","2026-11-18":"T,Z,M,Z,M","2026-11-19":"Z,M,M,Z,T","2026-11-20":"Z,M,T,M,Z","2026-11-21":"D,D,SM,SC,D",
-"2026-11-23":"H:Soberanía Nacional",
-"2026-11-24":"M,T,Z,M,Z","2026-11-25":"M,Z,Z,T,M","2026-11-26":"M,Z,T,M,Z","2026-11-27":"T,M,Z,Z,M","2026-11-28":"D,SM,D,D,SC","2026-11-30":"Z,T,M,Z,M"
-};
-const NOTES={};
-const GOALS={"2026-11":{unit:"Unidades",total:29,target:{emanuel:7,ignacio:7,valentin:7,manuel:4,valeria:4},done:{emanuel:1,ignacio:5,valentin:2,manuel:1,valeria:0}}};
-/* ===== FIN DATOS ===== */
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxbrnpBmaYCPTQJDpV4PYlVRTiuno1lvaN2ny-Y2601lFRlyi7Fu44U0pWyujMHtEIe/exec';
 
-const MONTHS=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-const DAYS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-const SH={M:["Mañana","08:30–14:00"],T:["Tarde","14:00–20:00"],SM:["Sáb Mañ","08:30–13:30"],SC:["Sáb Comp","8:30–13:30 / 16:30–20"],Z:["Zona","Viaje a zona"],DG:["Digital","Leads digitales"],E:["Evento","Activación"],D:["Descanso","Sin guardia"]};
-const now=new Date();
-let Y=now.getFullYear(),Mo=now.getMonth(),filter="all";
-if(!Object.keys(SCHEDULE).some(k=>k.startsWith(Y+"-"+String(Mo+1).padStart(2,"0")))){Y=2026;Mo=10}
+    let todasLasEntregas = [];
+    let vistaActual = 'dia';
+    let fechaReferencia = new Date();
+    fechaReferencia.setHours(0,0,0,0);
 
-const key=(y,m,d)=>y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
-function day(y,m,d){
-  const v=SCHEDULE[key(y,m,d)];
-  if(!v)return null;
-  if(v.startsWith("H:"))return{hol:v.slice(2)};
-  const a={};v.split(",").forEach((c,i)=>a[SELLERS[i].id]=c);
-  return{a,note:NOTES[key(y,m,d)]||""};
-}
-let nav=false;
-function chg(n){nav=true;Mo+=n;if(Mo>11){Mo=0;Y++}if(Mo<0){Mo=11;Y--}render()}
-function goToday(){Y=now.getFullYear();Mo=now.getMonth();render()}
-function setF(id){filter=id;render()}
-function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)}
-
-function pace(){
-  const n=new Date(Y,Mo+1,0).getDate();let tot=0,el=0;
-  for(let d=1;d<=n;d++){
-    if(new Date(Y,Mo,d).getDay()===0)continue;
-    const dd=day(Y,Mo,d);if(dd&&dd.hol)continue;
-    tot++;
-    if(new Date(Y,Mo,d)<=now)el++;
-  }
-  return{tot,el,eff:el||1,pct:tot?Math.round(el/tot*100):0};
-}
-function status(p,t){
-  if(t<=0)return{pct:0,c:"var(--mut)",e:"⚪"};
-  const pct=Math.round(p/t*100);
-  return{pct,c:pct>=100?"var(--ok)":pct>=70?"var(--warn)":"var(--bad)",e:pct>=100?"🟢":pct>=70?"🟡":"🔴"};
-}
-
-function render(){
-  document.getElementById("mlabel").textContent=MONTHS[Mo]+" "+Y;
-  const mk=key(Y,Mo,1).slice(0,7),g=GOALS[mk],p=pace();
-  /* objetivo */
-  const goal=document.getElementById("goal");
-  if(g){
-    const done=SELLERS.reduce((s,x)=>s+(g.done[x.id]||0),0),pct=g.total?Math.min(100,Math.round(done/g.total*100)):0;
-    const proj=p.el?Math.round(done/p.eff*p.tot*10)/10:0,st=status(proj,g.total);
-    goal.innerHTML=`<div class="kpi"><div><div class="eyebrow">Objetivo comercial · ${MONTHS[Mo]} ${Y}</div><h2>${done} / ${g.total} ${g.unit}</h2></div>
-    <div style="flex:1;min-width:260px;max-width:560px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--mut);font-weight:600">Avance acumulado del equipo</span><b style="color:${st.c}">${pct}%</b></div>
-    <div class="bar"><i style="width:${pct}%;background:${st.c}"></i></div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:8px"><span class="pill">Avance del mes: ${p.pct}% (${p.el}/${p.tot} días hábiles)</span><span class="pill" style="color:${st.c};border-color:${st.c}">Proyección de cierre: ${proj} (${st.pct}%)</span></div></div></div>`;
-  }else goal.innerHTML=`<div class="eyebrow">Objetivo comercial</div><div class="empty-msg" style="padding:10px">Sin objetivo cargado para ${MONTHS[Mo]} ${Y}.</div>`;
-  /* filtros */
-  document.getElementById("filters").innerHTML=`<button class="${filter==="all"?"on":""}" onclick="setF('all')">Todo el equipo (${SELLERS.length})</button>`+SELLERS.map(s=>`<button class="${filter===s.id?"on":""}" onclick="setF('${s.id}')">${s.name}</button>`).join("");
-  /* calendario */
-  const first=new Date(Y,Mo,1).getDay(),off=first===0?6:first-1,n=new Date(Y,Mo+1,0).getDate(),cells=Math.ceil((off+n)/7)*7;
-  const vis=filter==="all"?SELLERS:SELLERS.filter(s=>s.id===filter);
-  let h="";
-  for(let i=0;i<cells;i++){
-    const d=i-off+1;
-    if(d<1||d>n){h+=`<div class="cell empty"></div>`;continue}
-    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d),isT=Y===now.getFullYear()&&Mo===now.getMonth()&&d===now.getDate();
-    let body="",warn="";
-    if(dow===0)body=`<div class="note" style="border:0;margin:auto;text-align:center;letter-spacing:.1em;text-transform:uppercase">Salón cerrado</div>`;
-    else if(!dd)body=`<div class="note" style="border:0;margin:auto;text-align:center">Sin turnos cargados</div>`;
-    else if(dd.hol)body=`<div class="hol"><span>Feriado</span>${dd.hol}</div>`;
-    else{
-      if(dow>=1&&dow<=5){const m=SELLERS.filter(s=>dd.a[s.id]==="M").length,t=SELLERS.filter(s=>dd.a[s.id]==="T").length;if(m<2)warn=`! Mañ: ${m}/2`;else if(t<1)warn="! Tar: 0/1"}
-      body=vis.map(s=>{const c=dd.a[s.id];if(!c)return"";return`<div class="sh s-${c}" title="${s.name}: ${SH[c][0]} (${SH[c][1]})"><b>${s.name}</b><small><b>${SH[c][0]}</b><br>${SH[c][1]}</small></div>`}).join("");
-      if(dd.note)body+=`<div class="note">• ${dd.note}</div>`;
-    }
-    h+=`<div class="cell ${dow===0?"sun":""} ${isT?"today":""}"><div class="dn"><span class="n">${d}</span>${warn?`<span class="warn">${warn}</span>`:""}</div>${body}</div>`;
-  }
-  document.getElementById("grid").innerHTML=h;
-  /* resumen + alertas */
-  const st={};SELLERS.forEach(s=>st[s.id]={m:0,t:0,z:0,sab:0,ev:0});
-  const al=[];
-  for(let d=1;d<=n;d++){
-    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d);
-    if(dow===0||!dd||dd.hol)continue;
-    let mc=0,tc=0;
-    SELLERS.forEach(s=>{
-      const c=dd.a[s.id];
-      if(!c||c==="DG")return;
-      if(dow<6){if(c==="M"){st[s.id].m++;mc++}else if(c==="T"){st[s.id].t++;tc++}else if(c==="E")st[s.id].ev++;else st[s.id].z++}
-      else{if(c==="SM"||c==="SC"){st[s.id].sab++;const f=day(Y,Mo,d-1);if(f&&f.a&&f.a[s.id]==="Z")al.push(`<b>${s.name}</b>: sáb ${d} con guardia pegado al vie ${d-1} en Zona.`)}else if(c==="E")st[s.id].ev++}
-    });
-    if(dow<6){if(mc!==2)al.push(`${DAYS[dow]} ${d}: hay <b>${mc}</b> en Mañana (se requieren 2).`);if(tc!==1)al.push(`${DAYS[dow]} ${d}: hay <b>${tc}</b> en Tarde (se requiere 1).`)}
-  }
-  const rows=SELLERS.map(s=>{const x=st[s.id],tg=g?g.target[s.id]||0:0,dn=g?g.done[s.id]||0:0,pr=p.el?Math.round(dn/p.eff*p.tot*10)/10:0;
-    return{s,x,tot:x.m+x.t+x.sab+x.ev,tg,dn,pr,ps:status(pr,tg),pc:tg?Math.min(100,Math.round(dn/tg*100)):0}});
-  const shown=rows.filter(r=>r.tot>0||r.tg>0||r.dn>0||r.x.z>0);
-  shown.sort((a,b)=>b.pc-a.pc||b.ps.pct-a.ps.pct||b.dn-a.dn);
-  document.getElementById("sum").innerHTML=shown.map((r,i)=>`<tr><td>${i===0&&r.pc>0?"🥇 ":""}${r.s.name}</td><td>${r.tg}</td><td><b>${r.dn}</b></td>
-    <td><div style="display:flex;align-items:center;gap:8px"><div class="mini" style="flex:1"><i style="width:${r.pc}%;background:${r.ps.c}"></i></div><b style="font-size:12px;color:${r.ps.c}">${r.pc}%</b></div></td>
-    <td style="color:${r.ps.c};font-weight:800;white-space:nowrap">${r.ps.e} ${r.pr} (${r.ps.pct}%)</td>
-    <td>${r.x.m}</td><td>${r.x.t}</td><td>${r.x.z}</td><td>${r.x.sab}</td><td>${r.x.ev}</td><td><b>${r.tot}</b></td></tr>`).join("");
-}
-
-function copyWA(){
-  const n=new Date(Y,Mo+1,0).getDate(),g=GOALS[key(Y,Mo,1).slice(0,7)];
-  const vis=filter==="all"?SELLERS:SELLERS.filter(s=>s.id===filter);
-  let t=`*CITYDRIVE — TURNERO ${MONTHS[Mo].toUpperCase()} ${Y}*\n`;
-  if(g){const dn=SELLERS.reduce((s,x)=>s+(g.done[x.id]||0),0);t+=`Objetivo salón: *${dn}/${g.total} ${g.unit}*\n`}
-  t+=`_Mañ: 8:30–14 | Tar: 14–20 | Sáb Mañ: 8:30–13:30 | Sáb Comp: +16:30–20_\n\n`;
-  for(let d=1;d<=n;d++){
-    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d);if(dow===0||!dd)continue;
-    const lab=DAYS[dow].slice(0,3)+" "+d;
-    if(dd.hol){t+=`• *${lab}:* FERIADO (${dd.hol})\n`;continue}
-    if(dow===6){const e=vis.filter(s=>dd.a[s.id]!=="D").map(s=>`${s.name} (${SH[dd.a[s.id]][0]})`);t+=`• *${lab}:* ${e.length?e.join(", "):"Descanso"}\n`;continue}
-    const by=c=>vis.filter(s=>dd.a[s.id]===c).map(s=>s.name).join("/");
-    const parts=[["Mañ","M"],["Tar","T"],["Evento","E"],["Zona","Z"]].map(([l,c])=>by(c)?`${l}: ${by(c)}`:"").filter(Boolean);
-    t+=`• *${lab}:* ${parts.join(" | ")}\n`;
-  }
-  const done=()=>toast("Resumen copiado para WhatsApp");
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>fallback(t,done))}else fallback(t,done);
-}
-function fallback(t,cb){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");cb()}catch(e){toast("No se pudo copiar")}document.body.removeChild(a)}
-/* ===== LECTURA DESDE GOOGLE SHEETS =====
-   Pegá acá los dos links (publicados como CSV). Si quedan vacíos, la página usa los datos de arriba. */
-const URL_TURNOS="https://docs.google.com/spreadsheets/d/e/2PACX-1vSK8cRp3b3cyVYkEMNa-i6hxqaAdMZtTsQaX28Q2tDpUJ_keZdYI3nzPOodJYo4ChxkH4RYmST6zR40/pub?gid=1751656908&single=true&output=csv";
-const URL_VENTAS="https://docs.google.com/spreadsheets/d/e/2PACX-1vSK8cRp3b3cyVYkEMNa-i6hxqaAdMZtTsQaX28Q2tDpUJ_keZdYI3nzPOodJYo4ChxkH4RYmST6zR40/pub?gid=1741881272&single=true&output=csv";
-function csv(t){const r=[];let row=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===","){row.push(c);c=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;row.push(c);r.push(row);row=[];c=""}else c+=ch}if(c!==""||row.length){row.push(c);r.push(row)}return r.filter(x=>x.some(v=>v.trim()!==""))}
-const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
-function pDate(s){s=(s||"").trim();let m;if(m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))return[+m[1],+m[2],+m[3]];if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))return[+m[3],+m[2],+m[1]];return null}
-function pMonth(s){s=(s||"").trim();let m;if(m=s.match(/^(\d{4})-(\d{1,2})/))return m[1]+"-"+String(m[2]).padStart(2,"0");if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))return m[3]+"-"+String(m[2]).padStart(2,"0");if(m=s.match(/^(\d{1,2})\/(\d{4})/))return m[2]+"-"+String(m[1]).padStart(2,"0");return null}
-async function get(u){const r=await fetch(u+(u.includes("?")?"&":"?")+"_="+Date.now());if(!r.ok)throw new Error("http");return csv(await r.text())}
-async function loadSheets(){
-  if(!URL_TURNOS)return;
-  try{
-    const t=await get(URL_TURNOS),h=t[0].map(x=>x.trim()),low=h.map(x=>x.toLowerCase());
-    const iF=low.indexOf("fecha"),iH=low.indexOf("feriado"),iN=low.indexOf("nota");
-    const sc=h.map((x,i)=>(!x||["fecha","feriado","nota"].includes(low[i]))?-1:i).filter(i=>i>=0);
-    if(iF<0||!sc.length)throw new Error("formato");
-    const SC={},NT={};
-    t.slice(1).forEach(r=>{const d=pDate(r[iF]);if(!d)return;const k=key(d[0],d[1]-1,d[2]);const hol=iH>=0?(r[iH]||"").trim():"";
-      if(hol)SC[k]="H:"+hol;else SC[k]=sc.map(i=>{const v=(r[i]||"").trim().toUpperCase();return v===""?"":(SH[v]?v:"Z")}).join(",");
-      if(iN>=0&&(r[iN]||"").trim())NT[k]=r[iN].trim()});
-    SELLERS.length=0;sc.forEach(i=>SELLERS.push({id:norm(h[i]),name:h[i]}));
-    Object.keys(SCHEDULE).forEach(k=>delete SCHEDULE[k]);Object.assign(SCHEDULE,SC);
-    Object.keys(NOTES).forEach(k=>delete NOTES[k]);Object.assign(NOTES,NT);
-    if(URL_VENTAS){
-      const v=await get(URL_VENTAS),vh=v[0].map(x=>x.trim().toLowerCase()),im=vh.indexOf("mes"),iv=vh.indexOf("vendedor"),ig=vh.indexOf("meta"),ic=vh.indexOf("cerradas");
-      if(im>=0&&iv>=0){
-        const G={};
-        v.slice(1).forEach(r=>{const mk=pMonth(r[im]);if(!mk)return;const g=G[mk]||(G[mk]={unit:"Unidades",total:null,target:{},done:{}});const id=norm((r[iv]||"").trim()),meta=parseInt(r[ig])||0,ce=parseInt(r[ic])||0;
-          if(id==="total")g.total=meta;else{g.target[id]=meta;g.done[id]=ce}});
-        Object.keys(G).forEach(k=>{if(G[k].total===null)G[k].total=Object.values(G[k].target).reduce((a,b)=>a+b,0)});
-        Object.keys(GOALS).forEach(k=>delete GOALS[k]);Object.assign(GOALS,G);
+    async function cargarDatos() {
+      const icon = document.getElementById('icon-refresh');
+      icon.classList.add('animate-spin');
+      
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Error HTTP ' + res.status);
+        const datos = await res.json();
+        
+        todasLasEntregas = datos || [];
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('contenedor-entregas').classList.remove('hidden');
+        
+        const ahora = new Date();
+        document.getElementById('last-sync').textContent = 'Actualizado ' + ahora.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+        renderizar();
+      } catch (err) {
+        document.getElementById('loader').innerHTML = `<p class="text-red-600 text-xs font-semibold">Error al conectar con la planilla: ${err.message}</p>`;
+      } finally {
+        icon.classList.remove('animate-spin');
       }
     }
-    if(!nav){const k=key(now.getFullYear(),now.getMonth(),1).slice(0,7);if(Object.keys(SCHEDULE).some(x=>x.startsWith(k))){Y=now.getFullYear();Mo=now.getMonth()}}
-    render();
-  }catch(e){toast("No se pudo leer la planilla; se muestran los últimos datos guardados")}
-}
-render();
-loadSheets();
-setInterval(loadSheets,300000);
-</script>
+
+    function parseFechaLocal(isoStr) {
+      if (!isoStr) return null;
+      const [y, m, d] = isoStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function formatFechaArg(isoStr) {
+      if (!isoStr) return '-';
+      const [y, m, d] = isoStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function getRangoFechas(vista, ref) {
+      const inicio = new Date(ref);
+      const fin = new Date(ref);
+      if (vista === 'semana') {
+        const day = inicio.getDay();
+        const diff = inicio.getDate() - day + (day === 0 ? -6 : 1);
+        inicio.setDate(diff);
+        fin.setTime(inicio.getTime());
+        fin.setDate(inicio.getDate() + 6);
+      } else if (vista === 'mes') {
+        inicio.setDate(1);
+        fin.setMonth(inicio.getMonth() + 1, 0);
+      }
+      inicio.setHours(0,0,0,0);
+      fin.setHours(23,59,59,999);
+      return { inicio, fin };
+    }
+
+    function cambiarVista(nuevaVista) {
+      vistaActual = nuevaVista;
+      ['dia', 'semana', 'mes'].forEach(v => {
+        const btn = document.getElementById('tab-' + v);
+        btn.className = v === nuevaVista
+          ? 'px-4 py-1.5 rounded-md text-xs font-semibold transition bg-black text-white shadow-sm'
+          : 'px-4 py-1.5 rounded-md text-xs font-semibold transition text-zinc-600 hover:text-black';
+      });
+      renderizar();
+    }
+
+    function moverFecha(delta) {
+      if (vistaActual === 'dia') fechaReferencia.setDate(fechaReferencia.getDate() + delta);
+      if (vistaActual === 'semana') fechaReferencia.setDate(fechaReferencia.getDate() + (delta * 7));
+      if (vistaActual === 'mes') fechaReferencia.setMonth(fechaReferencia.getMonth() + delta);
+      renderizar();
+    }
+
+    function irAHoy() {
+      fechaReferencia = new Date();
+      fechaReferencia.setHours(0,0,0,0);
+      renderizar();
+    }
+
+    function actualizarContadores() {
+      const rDia = getRangoFechas('dia', fechaReferencia);
+      const rSem = getRangoFechas('semana', fechaReferencia);
+      const rMes = getRangoFechas('mes', fechaReferencia);
+
+      let cDia = 0, cSem = 0, cMes = 0;
+      todasLasEntregas.forEach(e => {
+        const f = parseFechaLocal(e.fecha);
+        if (!f) return;
+        if (f >= rDia.inicio && f <= rDia.fin) cDia++;
+        if (f >= rSem.inicio && f <= rSem.fin) cSem++;
+        if (f >= rMes.inicio && f <= rMes.fin) cMes++;
+      });
+
+      document.getElementById('count-dia').textContent = cDia;
+      document.getElementById('count-semana').textContent = cSem;
+      document.getElementById('count-mes').textContent = cMes;
+    }
+
+    function renderizar() {
+      actualizarContadores();
+      const { inicio, fin } = getRangoFechas(vistaActual, fechaReferencia);
+      const q = document.getElementById('buscador').value.toLowerCase().trim();
+
+      const lbl = document.getElementById('rango-fecha-label');
+      if (vistaActual === 'dia') {
+        lbl.textContent = fechaReferencia.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+      } else if (vistaActual === 'semana') {
+        lbl.textContent = `${inicio.toLocaleDateString('es-AR', {day:'2-digit', month:'short'})} - ${fin.toLocaleDateString('es-AR', {day:'2-digit', month:'short'})}`;
+      } else {
+        lbl.textContent = fechaReferencia.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+      }
+
+      const filtradas = todasLasEntregas
+        .filter(e => {
+          const f = parseFechaLocal(e.fecha);
+          if (!f || f < inicio || f > fin) return false;
+          if (!q) return true;
+          return (e.cliente + ' ' + e.modelo + ' ' + e.bastidor + ' ' + e.refer + ' ' + e.usado).toLowerCase().includes(q);
+        })
+        .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+
+      const cont = document.getElementById('contenedor-entregas');
+      if (filtradas.length === 0) {
+        cont.innerHTML = `
+          <div class="bg-white border border-zinc-200 rounded-xl p-12 text-center">
+            <p class="text-sm font-semibold text-zinc-800">No hay entregas programadas para este período</p>
+            <p class="text-xs text-zinc-500 mt-1">Probá cambiando de fecha o seleccionando la vista de Semana o Mes.</p>
+          </div>`;
+        return;
+      }
+
+      const grupos = {};
+      filtradas.forEach(e => {
+        if (!grupos[e.fecha]) grupos[e.fecha] = [];
+        grupos[e.fecha].push(e);
+      });
+
+      let html = '<div class="space-y-6">';
+      Object.keys(grupos).sort().forEach(fechaKey => {
+        const fObj = parseFechaLocal(fechaKey);
+        const tituloFecha = fObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        html += `
+          <div>
+            <div class="flex items-center justify-between mb-3 border-b border-zinc-200 pb-1.5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-700 capitalize">${tituloFecha}</h3>
+              <span class="text-[11px] font-semibold text-zinc-500">${grupos[fechaKey].length} entrega(s)</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">`;
+
+        grupos[fechaKey].forEach(item => {
+          const tieneUsado = item.usado && item.usado !== '-';
+          html += `
+            <div onclick='abrirModal(${JSON.stringify(item).replace(/'/g, "&#39;")})' 
+                 class="bg-white border border-zinc-200 rounded-xl p-4 cursor-pointer card-hover flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="px-2.5 py-0.5 bg-black text-white text-xs font-bold rounded font-mono">${item.hora} hs</span>
+                  ${tieneUsado ? '<span class="px-2 py-0.5 bg-zinc-100 border border-zinc-300 text-zinc-800 text-[10px] font-bold uppercase rounded">Con Usado</span>' : ''}
+                </div>
+                <h4 class="font-bold text-sm text-black uppercase truncate" title="${item.cliente}">${item.cliente || 'Sin nombre'}</h4>
+                <p class="text-xs font-semibold text-zinc-600 mt-0.5 uppercase">${item.modelo || 'Modelo a confirmar'}</p>
+              </div>
+              
+              <div class="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+                <span class="font-mono truncate max-w-[160px]">${item.bastidor || 'Sin bastidor'}</span>
+                <span class="text-black font-semibold">Ver ficha &rarr;</span>
+              </div>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+      });
+      html += '</div>';
+      cont.innerHTML = html;
+    }
+
+    function abrirModal(item) {
+      document.getElementById('m-cliente').textContent = item.cliente || '-';
+      document.getElementById('m-fecha').textContent = formatFechaArg(item.fecha);
+      document.getElementById('m-hora').textContent = (item.hora || '--:--') + ' hs';
+      document.getElementById('m-modelo').textContent = item.modelo || '-';
+      document.getElementById('m-bastidor').textContent = item.bastidor || '-';
+      document.getElementById('m-refer').textContent = item.refer || '-';
+      document.getElementById('m-usado').textContent = item.usado || 'No entrega usado';
+      document.getElementById('m-usuario').textContent = item.usuario || '-';
+      
+      const modal = document.getElementById('modal-detalle');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById('modal-detalle');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copiarBastidor() {
+      const txt = document.getElementById('m-bastidor').textContent;
+      if (!txt || txt === '-') return;
+      navigator.clipboard.writeText(txt);
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = '¡Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 1500);
+    }
+
+    cargarDatos();
+    setInterval(cargarDatos, 180000);
+  </script>
 </body>
 </html>
