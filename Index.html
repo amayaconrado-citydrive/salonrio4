@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Citydrive | Turnero comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#0a0a0a;--mut:#71717a;--line:#e4e4e7;--soft:#f4f4f5;--inv:#0a0a0a;--invfg:#fff;--ok:#059669;--warn:#d97706;--bad:#e11d48;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--fg:#fafafa;--mut:#a1a1aa;--line:#3f3f46;--soft:#18181b;--inv:#fafafa;--invfg:#0a0a0a;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a0a0a;--fg:#fafafa;--mut:#a1a1aa;--line:#3f3f46;--soft:#18181b;--inv:#fafafa;--invfg:#0a0a0a;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.4}
+.wrap{max-width:1400px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.logo{font-size:28px;letter-spacing:-.04em}.logo b{font-weight:800}.logo span{font-weight:400}
+.nav{display:flex;align-items:center;gap:4px;background:var(--soft);border:1px solid var(--line);border-radius:99px;padding:4px}
+.nav button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;padding:7px 14px;font-weight:600;font-size:12px}
+.nav button{border:0;background:transparent;font-size:16px;padding:4px 12px}
+.nav .m{min-width:150px;text-align:center;font-weight:700;font-size:13px}
+.btn.dark{background:var(--inv);color:var(--invfg);border-color:var(--inv);font-weight:700}
+.card{border:1px solid var(--fg);border-radius:16px;padding:16px;margin-bottom:16px;background:var(--bg)}
+.kpi{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.kpi h2{margin:2px 0 0;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.bar{height:12px;background:var(--soft);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--bad)}
+.pill{display:inline-block;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+.filters button{font:inherit;cursor:pointer;border:0;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;background:var(--soft);color:var(--fg);white-space:nowrap}
+.filters button.on{background:var(--inv);color:var(--invfg)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;margin-bottom:12px;align-items:center}
+.layout{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.main{flex:1 1 100%;min-width:0}
+.scroll{overflow-x:auto}
+.cal{min-width:760px;border:1px solid var(--fg);border-radius:16px;overflow:hidden}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.dow div{background:var(--inv);color:var(--invfg);text-align:center;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 0}
+.cell{min-height:150px;padding:6px;border-right:1px solid var(--line);border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px;background:var(--bg)}
+.cell:nth-child(7n){border-right:0}
+.cell.sun{background:repeating-linear-gradient(-45deg,var(--soft),var(--soft) 4px,var(--bg) 4px,var(--bg) 8px)}
+.cell.empty{background:var(--soft)}
+.cell.today{outline:2px solid var(--fg);outline-offset:-2px}
+.dn{font-weight:800;font-size:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.dn .n{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.today .dn .n{background:var(--inv);color:var(--invfg)}
+.warn{font-size:9px;font-weight:700;border:1px solid var(--warn);color:var(--warn);border-radius:4px;padding:1px 5px}
+.sh{display:flex;justify-content:space-between;gap:4px;border:1px solid;border-radius:6px;padding:3px 6px;font-size:10.5px}
+.sh b{font-weight:700}.sh small{font-size:9px;text-align:right;line-height:1.15}
+.s-M{background:var(--inv);color:var(--invfg);border-color:var(--inv)}
+.s-T{background:#3f3f46;color:#fff;border-color:#3f3f46}
+.s-SM{background:var(--bg);border-color:var(--fg)}
+.s-SC{background:#18181b;color:#fff;border-color:#52525b}
+.s-DG{background:var(--bg);color:var(--fg);border:1px solid var(--line)}
+.s-Z{background:var(--bg);border:1px dashed var(--mut)}
+.s-E{background:var(--line);border-color:var(--fg);font-weight:700}
+.s-D{background:var(--soft);color:var(--mut);border-color:var(--line)}
+.hol{margin:auto 0;text-align:center;background:var(--inv);color:var(--invfg);border-radius:8px;padding:8px;font-size:11px;font-weight:700}
+.hol span{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.note{font-size:10px;color:var(--mut);border-top:1px solid var(--line);padding-top:3px;margin-top:auto}
+.panel{border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.panel h3{margin:0 0 10px;font-size:14px;font-weight:800}
+.panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:12px}
+.panel li{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+th{background:var(--soft);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
+td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;font-weight:700;padding-left:14px}
+.mini{height:8px;background:var(--line);border-radius:99px;overflow:hidden;min-width:70px}.mini i{display:block;height:100%}
+.empty-msg{padding:28px;text-align:center;color:var(--mut);font-weight:600}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);opacity:0;background:var(--inv);color:var(--invfg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:12px;transition:.3s;pointer-events:none}
+#toast.show{transform:translate(-50%,0);opacity:1}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}.cell{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo"><b>City</b><span>drive</span></div>
+  <div class="nav noprint">
+    <button onclick="chg(-1)" aria-label="Mes anterior">‹</button>
+    <span class="m" id="mlabel"></span>
+    <button onclick="chg(1)" aria-label="Mes siguiente">›</button>
+    <button class="btn dark" onclick="goToday()" style="font-size:11px;padding:5px 12px">Hoy</button>
+  </div>
+</header>
+
+<section class="card" id="goal"></section>
+
+<div class="layout">
+  <div class="main">
+    <div class="filters noprint" id="filters"></div>
+    <div class="legend">
+      <span class="eyebrow">Horarios:</span>
+      <span class="pill s-M">Mañana 08:30–14:00</span>
+      <span class="pill s-T">Tarde 14:00–20:00</span>
+      <span class="pill s-SM">Sáb Mañ 08:30–13:30</span>
+      <span class="pill s-SC">Sáb Comp 8:30–13:30 / 16:30–20</span>
+      <span class="pill s-Z">Zona</span>
+      <span class="pill s-DG">Digital</span>
+      <span class="pill s-E">★ Evento</span>
+      <span class="pill s-D">Descanso</span>
+    </div>
+    <div class="scroll"><div class="cal">
+      <div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div>
+      <div class="grid" id="grid"></div>
+    </div></div>
+  </div>
+</div>
+
+<section class="card" style="padding:0;overflow:hidden;margin-top:4px">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft)">
+    <h2 style="margin:0;font-size:16px;font-weight:800">Resumen mensual: turnos, zona y objetivos individuales</h2>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Vendedor</th><th>Objetivo</th><th>Avance</th><th style="min-width:140px">% Cumplimiento</th><th>Proyección</th><th>Mañ. L-V</th><th>Tar. L-V</th><th>Zona</th><th>Sáb. salón</th><th>Eventos</th><th>Total jorn.</th></tr></thead>
+    <tbody id="sum"></tbody>
+  </table></div>
+</section>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ===== DATOS DEL TURNERO (se actualizan desde acá) =====
+   Orden de cada día: Valeria, Valentín, Manuel, Emanuel, Ignacio
+   M=Mañana T=Tarde Z=Zona E=Evento SM=Sáb Mañana SC=Sáb Completo D=Descanso */
+const SELLERS=[{id:"valeria",name:"Valeria"},{id:"valentin",name:"Valentín"},{id:"manuel",name:"Manuel"},{id:"emanuel",name:"Emanuel"},{id:"ignacio",name:"Ignacio"}];
+const SCHEDULE={
+"2026-11-02":"T,Z,M,Z,M","2026-11-03":"Z,M,M,Z,T","2026-11-04":"Z,M,T,M,Z","2026-11-05":"M,T,Z,M,Z","2026-11-06":"M,Z,Z,T,M","2026-11-07":"SM,D,D,D,SC",
+"2026-11-09":"H:Visita del Papa","2026-11-10":"H:Feriado provincial Córdoba",
+"2026-11-11":"T,Z,M,Z,M","2026-11-12":"Z,M,M,Z,T","2026-11-13":"Z,M,T,M,Z","2026-11-14":"D,SM,D,SC,D",
+"2026-11-16":"M,T,Z,M,Z","2026-11-17":"M,Z,Z,T,M","2026-11-18":"T,Z,M,Z,M","2026-11-19":"Z,M,M,Z,T","2026-11-20":"Z,M,T,M,Z","2026-11-21":"D,D,SM,SC,D",
+"2026-11-23":"H:Soberanía Nacional",
+"2026-11-24":"M,T,Z,M,Z","2026-11-25":"M,Z,Z,T,M","2026-11-26":"M,Z,T,M,Z","2026-11-27":"T,M,Z,Z,M","2026-11-28":"D,SM,D,D,SC","2026-11-30":"Z,T,M,Z,M"
+};
+const NOTES={};
+const GOALS={"2026-11":{unit:"Unidades",total:29,target:{emanuel:7,ignacio:7,valentin:7,manuel:4,valeria:4},done:{emanuel:1,ignacio:5,valentin:2,manuel:1,valeria:0}}};
+/* ===== FIN DATOS ===== */
+
+const MONTHS=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const DAYS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const SH={M:["Mañana","08:30–14:00"],T:["Tarde","14:00–20:00"],SM:["Sáb Mañ","08:30–13:30"],SC:["Sáb Comp","8:30–13:30 / 16:30–20"],Z:["Zona","Viaje a zona"],DG:["Digital","Leads digitales"],E:["Evento","Activación"],D:["Descanso","Sin guardia"]};
+const now=new Date();
+let Y=now.getFullYear(),Mo=now.getMonth(),filter="all";
+if(!Object.keys(SCHEDULE).some(k=>k.startsWith(Y+"-"+String(Mo+1).padStart(2,"0")))){Y=2026;Mo=10}
+
+const key=(y,m,d)=>y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+function day(y,m,d){
+  const v=SCHEDULE[key(y,m,d)];
+  if(!v)return null;
+  if(v.startsWith("H:"))return{hol:v.slice(2)};
+  const a={};v.split(",").forEach((c,i)=>a[SELLERS[i].id]=c);
+  return{a,note:NOTES[key(y,m,d)]||""};
+}
+let nav=false;
+function chg(n){nav=true;Mo+=n;if(Mo>11){Mo=0;Y++}if(Mo<0){Mo=11;Y--}render()}
+function goToday(){Y=now.getFullYear();Mo=now.getMonth();render()}
+function setF(id){filter=id;render()}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)}
+
+function pace(){
+  const n=new Date(Y,Mo+1,0).getDate();let tot=0,el=0;
+  for(let d=1;d<=n;d++){
+    if(new Date(Y,Mo,d).getDay()===0)continue;
+    const dd=day(Y,Mo,d);if(dd&&dd.hol)continue;
+    tot++;
+    if(new Date(Y,Mo,d)<=now)el++;
+  }
+  return{tot,el,eff:el||1,pct:tot?Math.round(el/tot*100):0};
+}
+function status(p,t){
+  if(t<=0)return{pct:0,c:"var(--mut)",e:"⚪"};
+  const pct=Math.round(p/t*100);
+  return{pct,c:pct>=100?"var(--ok)":pct>=70?"var(--warn)":"var(--bad)",e:pct>=100?"🟢":pct>=70?"🟡":"🔴"};
+}
+
+function render(){
+  document.getElementById("mlabel").textContent=MONTHS[Mo]+" "+Y;
+  const mk=key(Y,Mo,1).slice(0,7),g=GOALS[mk],p=pace();
+  /* objetivo */
+  const goal=document.getElementById("goal");
+  if(g){
+    const done=SELLERS.reduce((s,x)=>s+(g.done[x.id]||0),0),pct=g.total?Math.min(100,Math.round(done/g.total*100)):0;
+    const proj=p.el?Math.round(done/p.eff*p.tot*10)/10:0,st=status(proj,g.total);
+    goal.innerHTML=`<div class="kpi"><div><div class="eyebrow">Objetivo comercial · ${MONTHS[Mo]} ${Y}</div><h2>${done} / ${g.total} ${g.unit}</h2></div>
+    <div style="flex:1;min-width:260px;max-width:560px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--mut);font-weight:600">Avance acumulado del equipo</span><b style="color:${st.c}">${pct}%</b></div>
+    <div class="bar"><i style="width:${pct}%;background:${st.c}"></i></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;margin-top:8px"><span class="pill">Avance del mes: ${p.pct}% (${p.el}/${p.tot} días hábiles)</span><span class="pill" style="color:${st.c};border-color:${st.c}">Proyección de cierre: ${proj} (${st.pct}%)</span></div></div></div>`;
+  }else goal.innerHTML=`<div class="eyebrow">Objetivo comercial</div><div class="empty-msg" style="padding:10px">Sin objetivo cargado para ${MONTHS[Mo]} ${Y}.</div>`;
+  /* filtros */
+  document.getElementById("filters").innerHTML=`<button class="${filter==="all"?"on":""}" onclick="setF('all')">Todo el equipo (${SELLERS.length})</button>`+SELLERS.map(s=>`<button class="${filter===s.id?"on":""}" onclick="setF('${s.id}')">${s.name}</button>`).join("");
+  /* calendario */
+  const first=new Date(Y,Mo,1).getDay(),off=first===0?6:first-1,n=new Date(Y,Mo+1,0).getDate(),cells=Math.ceil((off+n)/7)*7;
+  const vis=filter==="all"?SELLERS:SELLERS.filter(s=>s.id===filter);
+  let h="";
+  for(let i=0;i<cells;i++){
+    const d=i-off+1;
+    if(d<1||d>n){h+=`<div class="cell empty"></div>`;continue}
+    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d),isT=Y===now.getFullYear()&&Mo===now.getMonth()&&d===now.getDate();
+    let body="",warn="";
+    if(dow===0)body=`<div class="note" style="border:0;margin:auto;text-align:center;letter-spacing:.1em;text-transform:uppercase">Salón cerrado</div>`;
+    else if(!dd)body=`<div class="note" style="border:0;margin:auto;text-align:center">Sin turnos cargados</div>`;
+    else if(dd.hol)body=`<div class="hol"><span>Feriado</span>${dd.hol}</div>`;
+    else{
+      if(dow>=1&&dow<=5){const m=SELLERS.filter(s=>dd.a[s.id]==="M").length,t=SELLERS.filter(s=>dd.a[s.id]==="T").length;if(m<2)warn=`! Mañ: ${m}/2`;else if(t<1)warn="! Tar: 0/1"}
+      body=vis.map(s=>{const c=dd.a[s.id];if(!c)return"";return`<div class="sh s-${c}" title="${s.name}: ${SH[c][0]} (${SH[c][1]})"><b>${s.name}</b><small><b>${SH[c][0]}</b><br>${SH[c][1]}</small></div>`}).join("");
+      if(dd.note)body+=`<div class="note">• ${dd.note}</div>`;
+    }
+    h+=`<div class="cell ${dow===0?"sun":""} ${isT?"today":""}"><div class="dn"><span class="n">${d}</span>${warn?`<span class="warn">${warn}</span>`:""}</div>${body}</div>`;
+  }
+  document.getElementById("grid").innerHTML=h;
+  /* resumen + alertas */
+  const st={};SELLERS.forEach(s=>st[s.id]={m:0,t:0,z:0,sab:0,ev:0});
+  const al=[];
+  for(let d=1;d<=n;d++){
+    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d);
+    if(dow===0||!dd||dd.hol)continue;
+    let mc=0,tc=0;
+    SELLERS.forEach(s=>{
+      const c=dd.a[s.id];
+      if(!c||c==="DG")return;
+      if(dow<6){if(c==="M"){st[s.id].m++;mc++}else if(c==="T"){st[s.id].t++;tc++}else if(c==="E")st[s.id].ev++;else st[s.id].z++}
+      else{if(c==="SM"||c==="SC"){st[s.id].sab++;const f=day(Y,Mo,d-1);if(f&&f.a&&f.a[s.id]==="Z")al.push(`<b>${s.name}</b>: sáb ${d} con guardia pegado al vie ${d-1} en Zona.`)}else if(c==="E")st[s.id].ev++}
+    });
+    if(dow<6){if(mc!==2)al.push(`${DAYS[dow]} ${d}: hay <b>${mc}</b> en Mañana (se requieren 2).`);if(tc!==1)al.push(`${DAYS[dow]} ${d}: hay <b>${tc}</b> en Tarde (se requiere 1).`)}
+  }
+  const rows=SELLERS.map(s=>{const x=st[s.id],tg=g?g.target[s.id]||0:0,dn=g?g.done[s.id]||0:0,pr=p.el?Math.round(dn/p.eff*p.tot*10)/10:0;
+    return{s,x,tot:x.m+x.t+x.sab+x.ev,tg,dn,pr,ps:status(pr,tg),pc:tg?Math.min(100,Math.round(dn/tg*100)):0}});
+  const shown=rows.filter(r=>r.tot>0||r.tg>0||r.dn>0||r.x.z>0);
+  shown.sort((a,b)=>b.pc-a.pc||b.ps.pct-a.ps.pct||b.dn-a.dn);
+  document.getElementById("sum").innerHTML=shown.map((r,i)=>`<tr><td>${i===0&&r.pc>0?"🥇 ":""}${r.s.name}</td><td>${r.tg}</td><td><b>${r.dn}</b></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mini" style="flex:1"><i style="width:${r.pc}%;background:${r.ps.c}"></i></div><b style="font-size:12px;color:${r.ps.c}">${r.pc}%</b></div></td>
+    <td style="color:${r.ps.c};font-weight:800;white-space:nowrap">${r.ps.e} ${r.pr} (${r.ps.pct}%)</td>
+    <td>${r.x.m}</td><td>${r.x.t}</td><td>${r.x.z}</td><td>${r.x.sab}</td><td>${r.x.ev}</td><td><b>${r.tot}</b></td></tr>`).join("");
+}
+
+function copyWA(){
+  const n=new Date(Y,Mo+1,0).getDate(),g=GOALS[key(Y,Mo,1).slice(0,7)];
+  const vis=filter==="all"?SELLERS:SELLERS.filter(s=>s.id===filter);
+  let t=`*CITYDRIVE — TURNERO ${MONTHS[Mo].toUpperCase()} ${Y}*\n`;
+  if(g){const dn=SELLERS.reduce((s,x)=>s+(g.done[x.id]||0),0);t+=`Objetivo salón: *${dn}/${g.total} ${g.unit}*\n`}
+  t+=`_Mañ: 8:30–14 | Tar: 14–20 | Sáb Mañ: 8:30–13:30 | Sáb Comp: +16:30–20_\n\n`;
+  for(let d=1;d<=n;d++){
+    const dow=new Date(Y,Mo,d).getDay(),dd=day(Y,Mo,d);if(dow===0||!dd)continue;
+    const lab=DAYS[dow].slice(0,3)+" "+d;
+    if(dd.hol){t+=`• *${lab}:* FERIADO (${dd.hol})\n`;continue}
+    if(dow===6){const e=vis.filter(s=>dd.a[s.id]!=="D").map(s=>`${s.name} (${SH[dd.a[s.id]][0]})`);t+=`• *${lab}:* ${e.length?e.join(", "):"Descanso"}\n`;continue}
+    const by=c=>vis.filter(s=>dd.a[s.id]===c).map(s=>s.name).join("/");
+    const parts=[["Mañ","M"],["Tar","T"],["Evento","E"],["Zona","Z"]].map(([l,c])=>by(c)?`${l}: ${by(c)}`:"").filter(Boolean);
+    t+=`• *${lab}:* ${parts.join(" | ")}\n`;
+  }
+  const done=()=>toast("Resumen copiado para WhatsApp");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>fallback(t,done))}else fallback(t,done);
+}
+function fallback(t,cb){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");cb()}catch(e){toast("No se pudo copiar")}document.body.removeChild(a)}
+/* ===== LECTURA DESDE GOOGLE SHEETS =====
+   Pegá acá los dos links (publicados como CSV). Si quedan vacíos, la página usa los datos de arriba. */
+const URL_TURNOS="https://docs.google.com/spreadsheets/d/e/2PACX-1vSK8cRp3b3cyVYkEMNa-i6hxqaAdMZtTsQaX28Q2tDpUJ_keZdYI3nzPOodJYo4ChxkH4RYmST6zR40/pub?gid=1751656908&single=true&output=csv";
+const URL_VENTAS="https://docs.google.com/spreadsheets/d/e/2PACX-1vSK8cRp3b3cyVYkEMNa-i6hxqaAdMZtTsQaX28Q2tDpUJ_keZdYI3nzPOodJYo4ChxkH4RYmST6zR40/pub?gid=1741881272&single=true&output=csv";
+function csv(t){const r=[];let row=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===","){row.push(c);c=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;row.push(c);r.push(row);row=[];c=""}else c+=ch}if(c!==""||row.length){row.push(c);r.push(row)}return r.filter(x=>x.some(v=>v.trim()!==""))}
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+function pDate(s){s=(s||"").trim();let m;if(m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))return[+m[1],+m[2],+m[3]];if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))return[+m[3],+m[2],+m[1]];return null}
+function pMonth(s){s=(s||"").trim();let m;if(m=s.match(/^(\d{4})-(\d{1,2})/))return m[1]+"-"+String(m[2]).padStart(2,"0");if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))return m[3]+"-"+String(m[2]).padStart(2,"0");if(m=s.match(/^(\d{1,2})\/(\d{4})/))return m[2]+"-"+String(m[1]).padStart(2,"0");return null}
+async function get(u){const r=await fetch(u+(u.includes("?")?"&":"?")+"_="+Date.now());if(!r.ok)throw new Error("http");return csv(await r.text())}
+async function loadSheets(){
+  if(!URL_TURNOS)return;
+  try{
+    const t=await get(URL_TURNOS),h=t[0].map(x=>x.trim()),low=h.map(x=>x.toLowerCase());
+    const iF=low.indexOf("fecha"),iH=low.indexOf("feriado"),iN=low.indexOf("nota");
+    const sc=h.map((x,i)=>(!x||["fecha","feriado","nota"].includes(low[i]))?-1:i).filter(i=>i>=0);
+    if(iF<0||!sc.length)throw new Error("formato");
+    const SC={},NT={};
+    t.slice(1).forEach(r=>{const d=pDate(r[iF]);if(!d)return;const k=key(d[0],d[1]-1,d[2]);const hol=iH>=0?(r[iH]||"").trim():"";
+      if(hol)SC[k]="H:"+hol;else SC[k]=sc.map(i=>{const v=(r[i]||"").trim().toUpperCase();return v===""?"":(SH[v]?v:"Z")}).join(",");
+      if(iN>=0&&(r[iN]||"").trim())NT[k]=r[iN].trim()});
+    SELLERS.length=0;sc.forEach(i=>SELLERS.push({id:norm(h[i]),name:h[i]}));
+    Object.keys(SCHEDULE).forEach(k=>delete SCHEDULE[k]);Object.assign(SCHEDULE,SC);
+    Object.keys(NOTES).forEach(k=>delete NOTES[k]);Object.assign(NOTES,NT);
+    if(URL_VENTAS){
+      const v=await get(URL_VENTAS),vh=v[0].map(x=>x.trim().toLowerCase()),im=vh.indexOf("mes"),iv=vh.indexOf("vendedor"),ig=vh.indexOf("meta"),ic=vh.indexOf("cerradas");
+      if(im>=0&&iv>=0){
+        const G={};
+        v.slice(1).forEach(r=>{const mk=pMonth(r[im]);if(!mk)return;const g=G[mk]||(G[mk]={unit:"Unidades",total:null,target:{},done:{}});const id=norm((r[iv]||"").trim()),meta=parseInt(r[ig])||0,ce=parseInt(r[ic])||0;
+          if(id==="total")g.total=meta;else{g.target[id]=meta;g.done[id]=ce}});
+        Object.keys(G).forEach(k=>{if(G[k].total===null)G[k].total=Object.values(G[k].target).reduce((a,b)=>a+b,0)});
+        Object.keys(GOALS).forEach(k=>delete GOALS[k]);Object.assign(GOALS,G);
+      }
+    }
+    if(!nav){const k=key(now.getFullYear(),now.getMonth(),1).slice(0,7);if(Object.keys(SCHEDULE).some(x=>x.startsWith(k))){Y=now.getFullYear();Mo=now.getMonth()}}
+    render();
+  }catch(e){toast("No se pudo leer la planilla; se muestran los últimos datos guardados")}
+}
+render();
+loadSheets();
+setInterval(loadSheets,300000);
+</script>
+</body>
+</html>
